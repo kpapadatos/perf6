@@ -5,6 +5,9 @@ import { perf6, Profile } from '../src/perf6';
 import sleep from './common/sleep';
 
 describe('decorator', () => {
+    before(() => perf6.start({}));
+    after(() => perf6.stop());
+
     describe('should work on sync methods', () => {
         let a: number;
         let b: number;

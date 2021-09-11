@@ -4,3 +4,7 @@ export interface IPerformanceEnty {
     name: string;
     errored: boolean;
 }
+
+export interface IPerf6Options {
+
+}

@@ -1,3 +1,5 @@
+![logo.png](logo.png)
+
 # perf6
 
 NodeJs profiling tools.
