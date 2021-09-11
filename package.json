@@ -1,0 +1,23 @@
+{
+  "name": "perf6",
+  "version": "1.0.0",
+  "description": "Performance measurement tools for nodejs.",
+  "main": "dist/src/perf6.js",
+  "scripts": {
+    "build": "tsc",
+    "prepublish": "npm run build",
+    "test": "mocha -r ts-node/register test/**/*.test.ts",
+    "test-w": "mocha --require ts-node/register --watch --watch-files . test/**/*.test.ts"
+  },
+  "author": "Kosmas Papadatos",
+  "license": "GPL-2.0-only",
+  "dependencies": {
+    "@types/node": "^16.9.1"
+  },
+  "devDependencies": {
+    "@types/mocha": "^9.0.0",
+    "mocha": "^9.1.1",
+    "ts-node": "^10.2.1",
+    "typescript": "^4.4.3"
+  }
+}
