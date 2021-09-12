@@ -1,29 +1,40 @@
+import { performance } from 'perf_hooks';
+import { Session } from './classes/Session';
 import { IPerf6Options, IPerformanceEnty } from './interfaces';
 
 class Perf6 {
+    public isCollecting = false;
     private options = {} as IPerf6Options;
-    private isCollecting = false;
-    private store = [] as IPerformanceEnty[];
+    private session = new Session(0);
     public addEntry(entry: IPerformanceEnty) {
         if (this.isCollecting) {
-            this.store.push(entry);
+            this.session.addEntry(entry);
         }
     }
-    public popEntries() {
-        return this.store.splice(0);
-    }
     public start(options?: IPerf6Options) {
-        this.isCollecting = true;
+        if (!this.isCollecting) {
+            this.isCollecting = true;
+            this.session = new Session(performance.now());
 
-        if (options) {
             Object.assign(this.options, options);
+
+            return this.session;
+        } else {
+            throw new Error('start() was called but collection had already started.')
         }
     }
     public stop() {
-        this.isCollecting = false;
+        if (this.isCollecting) {
+            this.isCollecting = false;
+            this.session.end = performance.now();
+        } else {
+            throw new Error('stop() was called but collection was already stopped.');
+        }
     }
 }
 
 export const perf6 = new Perf6();
-export * from './classes/Profile';
+export * from './decorators/Profile';
+export * from './classes/Session';
+export * from './timerify';
 export * from './interfaces';
