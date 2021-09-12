@@ -111,7 +111,7 @@ describe('decorator', () => {
 
             entries = session.getEntries();
             perf6.stop();
-        })
+        });
 
         it('should have Test.constructor name', () => assert.equal(entries[0].name, 'Test.constructor'));
         it('should have Test.fnSync name', () => assert.equal(entries[1].name, 'Test.fnSync'));
@@ -134,6 +134,48 @@ describe('decorator', () => {
         it('should preserve private static getters', () => assert.equal(Test['privag'], 1));
         it('should preserve public static setters', () => assert.equal(Test._pubas, 2));
         it('should preserve private static setters', () => assert.equal(Test._privas, 2));
+        it('should preserve public getters', () => assert.equal(instance.pubg, instance['div']));
+        it('should preserve private getters', () => assert.equal(instance['privg'], instance['div']));
+        it('should preserve public setters', () => assert.equal(instance._pubs, 2));
+        it('should preserve private setters', () => assert.equal(instance._privs, 2));
+    });
+    describe('should work on instance accessors', () => {
+        let a: number;
+        let b: number;
+        let c: number;
+        let d: number;
+        let entries: IPerformanceEnty[];
+        let instance: Test;
+
+        class Test {
+            @Profile
+            public get pubg() { return this.div; }
+            @Profile
+            public set pubs(val: number) { this._pubs = val; }
+            public _privs?: number;
+            public _pubs?: number;
+            private div = 1;
+            @Profile
+            private get privg() { return this.div; }
+            @Profile
+            private set privs(val: number) { this._privs = val; }
+        }
+
+        before(async () => {
+            const session = perf6.start();
+            instance = new Test();
+
+            // Invoke getters
+            instance.pubg;
+            instance['privg'];
+
+            instance.pubs = 2;
+            instance['privs'] = 2;
+
+            entries = session.getEntries();
+            perf6.stop();
+        });
+
         it('should preserve public getters', () => assert.equal(instance.pubg, instance['div']));
         it('should preserve private getters', () => assert.equal(instance['privg'], instance['div']));
         it('should preserve public setters', () => assert.equal(instance._pubs, 2));

@@ -1,48 +1,48 @@
 import { timerify } from '../perf6';
 
+type Newable = any;
+
 export function Profile(
-    constructor: any,
+    Class: Newable,
     methodName?: string,
     descriptor?: PropertyDescriptor
 ) {
     let wrapped: any;
 
     if (descriptor === undefined) {
-        wrapped = wrapClass(constructor);
+        wrapped = wrapClass(Class);
     } else {
-        wrapped = wrapMethod(constructor, methodName as string, descriptor);
+        wrapped = wrapMethodOrAccessor(Class, methodName as string, descriptor);
     }
 
     return wrapped;
 };
 
-function wrapClass(constructor: any) {
-    const className = constructor.name;
-
+function wrapClass(Class: Newable) {
     // Wrap instance members
-    timerifyObject(className, constructor.prototype);
+    timerifyObject(Class.name, Class.prototype);
 
     // Wrap constructor
-    const wrapped = timerifyConstructor(constructor);
+    const wrapped = timerifyConstructor(Class);
 
     // Wrap static members
-    timerifyObject(className, constructor, wrapped);
+    timerifyObject(Class.name, Class, wrapped);
 
     return wrapped;
 }
 
-function wrapMethod(
-    constructor: any,
+function wrapMethodOrAccessor(
+    Class: Newable,
     methodName: string,
     descriptor: PropertyDescriptor
 ) {
-    const className = constructor.constructor.name;
+    const className = Class.constructor.name;
     timerifyDescriptor(descriptor, `${className}.${methodName}`)
     return descriptor;
 }
 
-function timerifyConstructor(constructor: any) {
-    return timerify((...args: any[]) => new constructor(args), `${constructor.name}.constructor`);
+function timerifyConstructor(Class: Newable) {
+    return timerify((...args: any) => new Class(args), `${Class.name}.constructor`);
 }
 
 function timerifyObject(name: string, sourceObj: Object, targetObj = sourceObj) {
