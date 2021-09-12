@@ -1,6 +1,6 @@
 {
   "name": "perf6",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Performance measurement tools for nodejs.",
   "main": "dist/src/perf6.js",
   "scripts": {
