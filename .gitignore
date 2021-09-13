@@ -2,3 +2,5 @@ node_modules
 dist
 package-lock.json
 perf6
+perf6.html
+.nyc_output

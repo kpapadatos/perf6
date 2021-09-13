@@ -7,7 +7,8 @@
     "build": "tsc",
     "prepublish": "npm run build",
     "test": "mocha -r ts-node/register test/**/*.test.ts",
-    "test-w": "mocha --require ts-node/register --watch --watch-files . test/**/*.test.ts"
+    "test-w": "mocha --require ts-node/register --watch --watch-files src,test test/**/*.test.ts",
+    "coverage": "nyc --exclude src/tests/** -r lcov -e .ts -x \"*.ts\" npm run test"
   },
   "author": "Kosmas Papadatos",
   "license": "GPL-2.0-only",

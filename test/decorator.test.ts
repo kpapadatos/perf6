@@ -1,5 +1,6 @@
 import assert from 'assert';
 import { describe } from 'mocha';
+import { resolve } from 'path';
 import { IPerformanceEnty } from '../src/interfaces';
 import { perf6, Profile } from '../src/perf6';
 import sleep from './common/sleep';
@@ -110,6 +111,7 @@ describe('decorator', () => {
             instance['privs'] = 2;
 
             entries = session.getEntries();
+
             perf6.stop();
         });
 

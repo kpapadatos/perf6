@@ -1,6 +1,8 @@
 import { performance } from 'perf_hooks';
 import { Session } from './classes/Session';
 import { IPerf6Options, IPerformanceEnty } from './interfaces';
+import { promises as fs, writeFileSync } from 'fs';
+import { resolve } from 'path';
 
 class Perf6 {
     public isCollecting = false;
@@ -30,6 +32,31 @@ class Perf6 {
         } else {
             throw new Error('stop() was called but collection was already stopped.');
         }
+    }
+    public async generateHtmlReport(dir: string) {
+        const index = {} as {
+            [fnName: string]: {
+                count: number;
+                totalDurationMs: number;
+            }
+        }
+
+        for (const entry of this.session.getEntries()) {
+            const indexEntry = index[entry.name] || (index[entry.name] = { count: 0, totalDurationMs: 0 });
+
+            indexEntry.count++;
+            indexEntry.totalDurationMs += entry.durationMs;
+        }
+
+        await fs.writeFile(resolve(dir, 'perf6.html'), `
+            <html>
+                <head>
+                </head>
+                <body>
+${Object.entries(index).map(([fnName, info]) => `<div><b>${fnName}:</b> ${JSON.stringify(info)}</div>`).join('\n')}
+                </body>
+            </html>
+        `);
     }
 }
 
